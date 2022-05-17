@@ -1,0 +1,5 @@
+api_key = "bd9979165b64f45e4714fa62f88aa956"
+url = "https://api.openweathermap.org/data/2.5/weather?"
+tg_api_key = "941246612:AAHDfYog0Cs9EfYINfE2NFDGvdlRy_D6FYo"
+history_file_name = "history.csv"
+msg_hist_file =  "message_hist.csv"
