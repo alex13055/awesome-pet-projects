@@ -1,3 +1,4 @@
 /__pycache__
-history.csv
-message_hist.csv
+/history.csv
+/message_hist.csv
+/config.py
