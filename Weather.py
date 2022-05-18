@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from collections import ChainMap, namedtuple
+from collections import namedtuple
 from datetime import datetime, timedelta
 from config import api_key, url, history_file_name
 from uuid import uuid4
@@ -38,7 +38,7 @@ class Weather:
             return Loc_tup(location.raw["lat"],location.raw["lon"])
         except AttributeError:
             return None
-    
+
     def get_response(self,loc):
         if loc:
             full_url = f"{url}lat={loc.lat}&lon={loc.lon}&appid={api_key}&units={Weather.units}"
@@ -46,7 +46,7 @@ class Weather:
             return response    
         else:
             return None
-       
+
     def create_instance_hist(self):
         self._instance_hist = pd.DataFrame(data=[Weather.instance_hist_template(self.id,
             self.city_name,
@@ -55,7 +55,7 @@ class Weather:
             self.pressure,
             self.condition,
             self.datetime)])
-        
+
     def show_info(self):
         """repr func"""
         return self._instance_hist
@@ -64,7 +64,7 @@ class Weather:
         """From Celsius to Fahrenheit"""
         self.is_fahrenheit = True
         self.temperature = (self.temperature * 9/5) + 32
-    
+
     def to_celsius(self):
         """From Fahrenheit to Celsius"""
         self.is_fahrenheit = False
