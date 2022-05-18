@@ -1,6 +1,6 @@
 from Weather import Weather
 
-weather1 = Weather("Yekaterinburg")
+weather1 = Weather("asdasdasf")
 
 # weather2 = Weather("Tbilisi")
 
@@ -8,3 +8,4 @@ weather1 = Weather("Yekaterinburg")
 # print(Weather.get_history())
 
 print(weather1._response)
+print(weather1.temperature)

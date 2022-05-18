@@ -16,5 +16,5 @@ def clear_history(filter_field,value,file):
         return "File does not exist"
     else:
         df = df[df[filter_field] != value]
-        df.to_csv(file)
+        df.to_csv(file, index = False)
         return None
