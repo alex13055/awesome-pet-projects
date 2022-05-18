@@ -21,24 +21,31 @@ class Weather:
         self.city_name = city_name
         self.location = self.get_location(self.city_name)
         self._response = self.get_response(self.location)
-        self.temperature = self._response["main"]["temp"]
-        self.wind_speed = self._response["wind"]["speed"]
-        self.pressure = self._response["main"]["pressure"]
-        self.condition = self._response["weather"][0]["main"]
-        self.datetime = (datetime.utcnow()  + timedelta(seconds = self._response["timezone"])).isoformat(timespec='minutes')
-        self.is_fahrenheit = False
-        self.create_instance_hist()
-        save_history(self._instance_hist,history_file_name)
+        if self._response is not None:
+            self.temperature = self._response["main"]["temp"]
+            self.wind_speed = self._response["wind"]["speed"]
+            self.pressure = self._response["main"]["pressure"]
+            self.condition = self._response["weather"][0]["main"]
+            self.datetime = (datetime.utcnow()  + timedelta(seconds = self._response["timezone"])).isoformat(timespec='minutes')
+            self.is_fahrenheit = False
+            self.create_instance_hist()
+            save_history(self._instance_hist,history_file_name)
 
     def get_location(self,*args):
-        Loc_tup = namedtuple("Location", "lat lon")
-        location = Weather.geolocator.geocode(args, language='en')
-        return Loc_tup(location.raw["lat"],location.raw["lon"])
+        try:
+            Loc_tup = namedtuple("Location", "lat lon")
+            location = Weather.geolocator.geocode(args, language='en')
+            return Loc_tup(location.raw["lat"],location.raw["lon"])
+        except AttributeError:
+            return None
     
     def get_response(self,loc):
-        full_url = f"{url}lat={loc.lat}&lon={loc.lon}&appid={api_key}&units={Weather.units}"
-        response = requests.get(full_url, headers = {"Accept":"application/json"}).json()
-        return response    
+        if loc:
+            full_url = f"{url}lat={loc.lat}&lon={loc.lon}&appid={api_key}&units={Weather.units}"
+            response = requests.get(full_url, headers = {"Accept":"application/json"}).json()
+            return response    
+        else:
+            return None
        
     def create_instance_hist(self):
         self._instance_hist = pd.DataFrame(data=[Weather.instance_hist_template(self.id,
@@ -66,9 +73,9 @@ class Weather:
     def give_advise(self):
         """get recommendations"""
         switcher = {
-            "Rain": "I would recommend to take an unbrella with you!",
-            "Clouds": "Mostly cloudly today, may be you could see sun!",
-            "Clear": "Enjoy the good weather! It is clear and sunny"
+            "Rain": "Не забудь взять с собой зонтик!",
+            "Clouds": "Так пасмурно, что даже солнца не видно!",
+            "Clear": "Наслаждайся хорошей погодой!"
         }
         return switcher.get(self.condition, "I can not recommend you anything :( ")
 
@@ -79,3 +86,7 @@ class Weather:
     @property
     def sunset(self):
         return datetime.fromtimestamp(self._response["sys"]["sunset"]).strftime("%I:%M:%S") + " PM"
+
+    @property
+    def correct_response(self):
+        return True if self._response is not None else False
