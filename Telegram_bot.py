@@ -2,9 +2,8 @@
 import telebot
 from Weather import Weather
 from config import tg_api_key, msg_hist_file
-from save_history import save_history, clear_history
-import pandas as pd
-from datetime import datetime
+from save_weather_history import save_history, clear_history
+from tg_bot_functions import save_data, get_user_history
 
 bot = telebot.TeleBot(tg_api_key)
 condition = False
@@ -42,35 +41,13 @@ def click_weather(message):
 
 @bot.message_handler(func= lambda message: True)
 def send_weather(message):
-    global weather 
     weather = Weather(message.text.strip())
     if not weather.correct_response:
         bot.send_message(message.chat.id, "Вы ввели неверный адрес, пожалуйста повторите попытку")
     else:
         bot.send_message(message.chat.id,f"""Сегодня в {weather.city_name} {int(weather.temperature)}°, скорость ветра {int(weather.wind_speed)} м/с, давление {weather.pressure}, погодные условия {weather.condition}, местное время {weather.datetime}""") 
         bot.send_message(message.chat.id,weather.give_advise())
-        create_and_save_data(message)
-
-def create_and_save_data(message):
-    save_df = pd.DataFrame({
-    "message_id": weather.id,    
-    "chat_id": message.chat.id,
-    "username": message.chat.username,
-    "datetime": datetime.fromtimestamp(message.date).isoformat(timespec='minutes'),
-    "message": message.text
-    }, index = [0])
-
-    save_history(save_df,msg_hist_file)
-
-def get_user_history(username):
-    try:
-        df = pd.read_csv(msg_hist_file)
-        df_username = df[df.username.isin([username])].sort_values(by = "datetime")
-    except FileNotFoundError:
-        return None
-    else:
-        if df_username.empty:
-            return None
-        return list(df_username.message.head())
+        saved_df = save_data(message,weather.id)
+        save_history(saved_df,msg_hist_file)
 
 bot.infinity_polling()

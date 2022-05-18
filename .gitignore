@@ -1,4 +1,5 @@
 /__pycache__
-/history.csv
-/message_hist.csv
+data/history.csv
+data/message_hist.csv
+tests/test.py
 /config.py

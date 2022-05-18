@@ -3,7 +3,7 @@ from collections import ChainMap, namedtuple
 from datetime import datetime, timedelta
 from config import api_key, url, history_file_name
 from uuid import uuid4
-from save_history import save_history
+from save_weather_history import save_history
 import requests
 import pandas as pd
 from geopy.geocoders import Nominatim
