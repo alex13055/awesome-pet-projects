@@ -52,8 +52,6 @@ def send_weather(message):
         bot.send_message(message.chat.id,weather.give_advise())
         create_and_save_data(message)
 
-
-
 def create_and_save_data(message):
     save_df = pd.DataFrame({
     "message_id": weather.id,    
