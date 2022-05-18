@@ -47,9 +47,12 @@ def send_weather(message):
     if not weather.correct_response:
         bot.send_message(message.chat.id, "Вы ввели неверный адрес, пожалуйста повторите попытку")
     else:
-        bot.send_message(message.chat.id,f"""Сегодня в {weather.city_name} {int(weather.temperature)}°, скорость ветра {int(weather.wind_speed)} м/с""") 
+        bot.send_message(message.chat.id,f"""
+        Сегодня в {weather.city_name} {int(weather.temperature)}°, скорость ветра {int(weather.wind_speed)} м/с, давление {weather.pressure}, погодные условия {weather.condition}, местное время {weather.datetime}""") 
         bot.send_message(message.chat.id,weather.give_advise())
         create_and_save_data(message)
+
+
 
 def create_and_save_data(message):
     save_df = pd.DataFrame({
